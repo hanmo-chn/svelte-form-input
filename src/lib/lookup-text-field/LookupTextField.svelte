@@ -9,6 +9,7 @@
     export let mandatory: boolean = true;
     export let disabled: any = null;
     export let defaultText:string = '';
+    export let readonly: boolean = false;
 
     const handleKeyDownEvent = (e) => {
         if (!mandatory && (e.code == "Backspace" || e.code == "Delete")) {
@@ -28,5 +29,5 @@
     $: displayText = (text || '').trim().length == 0 ? defaultText : text;
 
 </script>
-<TrailingIconTextField readonly {disabled} {style} on:focus={handleFocusEvent} on:keydown={handleKeyDownEvent}
+<TrailingIconTextField {readonly} {disabled} {style} acceptKeyboard={false} on:focus={handleFocusEvent} on:keydown={handleKeyDownEvent}
                        on:iconClick on:blur on:keypress on:keyup img={iconSelect} text={displayText}/>

@@ -1,13 +1,14 @@
 {
   "name": "@hanmotec/tsui-form-input",
-  "version": "0.0.6",
+  "version": "0.1.2",
   "description": "",
   "type": "module",
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
+    "build:css": "node-sass src/lib/tsui-form-fields.scss -o src/lib --output-style compressed",
     "dev": "vite dev",
-    "build": "svelte-kit sync && svelte-package",
+    "build": "npm run build:css && svelte-kit sync && svelte-package",
     "prepublishOnly": "echo 'Did you mean to publish `./package/`, instead of `./`?' && exit 1",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -15,7 +16,7 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "next",
-    "@sveltejs/kit": "next",
+    "@sveltejs/kit": "^1.9.1",
     "@sveltejs/package": "next",
     "sass": "^1.57.1",
     "svelte": "^3.44.0",
@@ -27,5 +28,9 @@
   },
   "author": "Henry Feng",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "dependencies": {
+    "@hanmotec/tsui-common": "^0.1.0",
+    "dayjs": "^1.11.7"
+  }
 }
