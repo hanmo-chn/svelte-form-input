@@ -36,7 +36,7 @@
         let value = new Date(year, month, e.detail);
         let allow = (min == null || !min.isAfter(value)) && (max == null || !max.isBefore(value));
         if (allow) {
-            dispatch('select',  dateUtils.formatISODate(dateUtils.formatDate(value).concat(' ').concat(time)));
+            dispatch('select',  dateUtils.formatDate(value));
         }
     }
 

@@ -7,6 +7,7 @@
     import Popover from "@hanmotec/tsui-common/popover"
     import CalendarPanel from "./CalendarPanel.svelte";
     import utils from "../utils";
+    import {onMount} from "svelte";
 
 
     export let format:string = 'YYYY-MM-DD';
@@ -17,7 +18,7 @@
     export let maxDate: string;
     export let value: string;
     export let readonly: boolean = false;
-    export let time: string = '00:00:00';
+    export let time: string = null;
 
     let valueText: string = '';
 
@@ -25,21 +26,38 @@
     let max: dayjs.Dayjs;
     let date: dayjs.Dayjs;
 
+    const toFormattedDate = (d) => {
+        let dt =  dateUtils.formatDate(d);
+        if (time == null) {
+            return dt;
+        } else {
+            return dateUtils.formatISODate(dt.concat(' ').concat(time));
+        }
+    }
+
+    onMount(()=>{
+        if (utils.isEmpty(value)) {
+            if (mandatory) {
+                value = toFormattedDate(dateUtils.today());
+                date = dayjs(value);
+                valueText = dateUtils.formatDate(date);
+            } else {
+                date = null;
+                valueText = '';
+            }
+        } else {
+            value = toFormattedDate(dayjs(value));
+            date = dayjs(value);
+            valueText = dateUtils.formatDate(date);
+        }
+    })
+
 
     $: min = minDate == null ? null : dayjs(minDate);
     $: max = maxDate == null ? null : dayjs(maxDate);
 
-    $: if (utils.isEmpty(value)) {
-        if (mandatory) {
-            value = dateUtils.formatISODate(dateUtils.formatDate(dateUtils.today()).concat(' ').concat(time));
-            date = dayjs(value);
-            valueText = dateUtils.formatDate(date);
-        } else {
-            date = null;
-            valueText = '';
-        }
-    } else {
-        value = dateUtils.formatISODate(dateUtils.formatDate(dayjs(value)).concat(' ').concat(time));
+    $: if (!utils.isEmpty(value)) {
+        value = toFormattedDate(dayjs(value));
         date = dayjs(value);
         valueText = dateUtils.formatDate(date);
     }
@@ -47,12 +65,10 @@
     let popover;
 
     const handleCalendarClick = () => {
-        console.debug('打开日期选择框');
         popover.doOpen();
     }
 
     const handleCalendarSelect = (e) => {
-        console.debug('关闭日期选择框');
         value = e.detail;
         popover.close();
     }
@@ -64,7 +80,7 @@
     {#if !readonly}
         <div class="icon-bar">
             {#if !mandatory}
-                <img style="padding: 6px" alt="" src={iconDelete} on:click={()=>{value=''}}/>
+                <img style="padding: 6px" alt="" src={iconDelete} on:click={()=>{value=''; valueText=''}}/>
             {/if}
             <img style="padding: 6px" alt="" src={iconCalendar} on:click={handleCalendarClick}/>
         </div>
