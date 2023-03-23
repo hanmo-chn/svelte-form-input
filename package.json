@@ -1,6 +1,6 @@
 {
   "name": "@hanmotec/tsui-form-input",
-  "version": "0.1.2",
+  "version": "0.1.6",
   "description": "",
   "type": "module",
   "main": "index.js",

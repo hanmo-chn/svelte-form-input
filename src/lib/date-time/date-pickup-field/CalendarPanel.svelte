@@ -12,6 +12,7 @@
     export let value: dayjs.Dayjs;
     export let min: dayjs.Dayjs;
     export let max: dayjs.Dayjs;
+    export let time: string;
 
     const dispatch = createEventDispatcher();
     const today = dateUtils.today();
@@ -32,7 +33,11 @@
         }
 
     const handleDateSelected = (e) => {
-        dispatch('select', dateUtils.formatDate(new Date(year, month, e.detail)));
+        let value = new Date(year, month, e.detail);
+        let allow = (min == null || !min.isAfter(value)) && (max == null || !max.isBefore(value));
+        if (allow) {
+            dispatch('select',  dateUtils.formatISODate(dateUtils.formatDate(value).concat(' ').concat(time)));
+        }
     }
 
     const showNextMonth = () => {
@@ -55,14 +60,14 @@
 <div class="tsui-calendar-panel" style="width: 100%; height: 100%">
     {#if showMode === 'Monthly'}
         <div class="month-calendar">
-            <div class="title-bar">
+            <div class="calendar-title-bar">
                 <div>
                     <img src={iconLeft} on:click={()=>{showPreviousMonth()}}/>
                 </div>
                 <div style="width: 100%; text-align: center; line-height: 20px">
-                    <span style="cursor: pointer" on:click={()=>{showMode='Year-Choose'}}>{year}</span>
+                    <span style="cursor: pointer; font-weight: 600" on:click={()=>{showMode='Year-Choose'}}>{year}</span>
                     <span> 年 </span>
-                    <span style="cursor: pointer" on:click={()=>{showMode='Month-Choose'}}>{month+1}</span>
+                    <span style="cursor: pointer; font-weight: 600" on:click={()=>{showMode='Month-Choose'}}>{month+1}</span>
                     <span> 月 </span>
                 </div>
                 <div>
@@ -97,7 +102,7 @@
         flex-direction: column;
     }
 
-    .month-calendar .title-bar {
+    .month-calendar .calendar-title-bar {
         display: flex;
         font-size: 1.1em;
         flex-grow: 0;
@@ -105,9 +110,10 @@
         padding: 2px 10px;
         height: 22px;
         box-sizing: border-box;
+        border-bottom: 1px solid #d9d9d9;
     }
 
-    .title-bar img{
+    .calendar-title-bar img{
         width: 20px;
         height: 20px;
         padding: 2px;
@@ -115,7 +121,7 @@
         box-sizing: border-box;
     }
 
-    .title-bar img:hover {
+    .calendar-title-bar img:hover {
         background-color: #f0f0f0;
         border-radius: 50%;
     }

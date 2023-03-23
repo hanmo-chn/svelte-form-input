@@ -20,4 +20,12 @@ const formatDate = (d: dayjs.Dayjs | Date | string, fmt: string = 'YYYY-MM-DD'):
     return d.format(fmt);
 }
 
-export default {today, formatDate}
+const formatISODate = (d: dayjs.Dayjs | Date | string): string => {
+    if (d == null) {
+        return '';
+    }
+    d = dayjs.isDayjs(d) ? d : dayjs(d);
+    return d.toISOString();
+}
+
+export default {today, formatDate, formatISODate}
